@@ -17049,6 +17049,8 @@ in
 
   webrtc-audio-processing = callPackage ../development/libraries/webrtc-audio-processing { };
 
+  webwormhole = callPackage ../tools/networking/webwormhole { };
+
   wildmidi = callPackage ../development/libraries/wildmidi { };
 
   wiredtiger = callPackage ../development/libraries/wiredtiger { };
