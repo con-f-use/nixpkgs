@@ -100,12 +100,21 @@ let
       type = with types; listOf types.singleLineStr;
       default = [];
       description = mdDoc ''
-        A list of verbatim principal names that should be added to the user's
-        authorized principals.
+        A list of authorized principals that may login as this user.
+
+        By signing any ssh public key and including in the signature one of the
+        principal names listed in this option, the signing authority can authorize 
+        the key holder to login as that user. Eliminates the need to change anything
+        on the sshd host, when a new key holder needs access. Solely the signing
+        certificate needs to be configured on the host once, e.g. by using 
+        `services.openssh.extraConfig = "TrustedUserCAKeys ''${path_to_authority_certificate}";`.
+
+        See: [SSH Certificate Authentication](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-using_openssh_certificate_authentication)
       '';
       example = [
         "example@host"
         "foo@bar"
+        "admins"
       ];
     };
 
