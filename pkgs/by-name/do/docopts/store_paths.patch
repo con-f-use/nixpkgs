@@ -1,0 +1,49 @@
+diff --git a/docopts.sh b/docopts.sh
+index 28767e5..dd9b80a 100644
+--- a/docopts.sh
++++ b/docopts.sh
+@@ -28,6 +28,8 @@
+ #   source path/to/docopts.sh
+ #   docopts -G ARGS -h "$help" -V $version : "$@"
+ 
++declare -A _from_nix_store
++
+ # Doc:
+ # fetch `Usage:` bloc from the given filename
+ # usually $0 in the main level script
+@@ -35,7 +37,7 @@ docopt_get_help_string() {
+     local myfname=$1
+     # filter the first block starting at a "# Usage:" and ending at an empty line
+     # one level of comment markup is removed.
+-    awk '
++    ${_from_nix_store[awk]} '
+         BEGIN { u=0; l=0 }
+         # we catch the first Usage: match
+         /^# Usage:/ {
+@@ -85,7 +87,7 @@ docopt_get_version_string() {
+     if [[ -f "$1" ]] ; then
+         # filter the block (all blocks) starting at a "# Usage:" and ending
+         # at an empty line, one level of comment markup is removed
+-        sed -n -e '/^# ----/,/^$/ { 1d; s/^# \{0,1\}//; /----/ d; p; }' < "$1"
++        ${_from_nix_store[sed]} -n -e '/^# ----/,/^$/ { 1d; s/^# \{0,1\}//; /----/ d; p; }' < "$1"
+     else
+         # use docopts --separator behavior
+         echo "$1"
+@@ -177,7 +179,7 @@ docopt_get_raw_value() {
+     local docopts_out="$3"
+     local kstr=$(printf "%s['%s']" $assoc "$key")
+     # split on '=', outputs the remaining for the matching $1
+-    awk -F= "\$1 == \"$kstr\" {sub(\"^[^=]+=\", \"\", \$0);print}" <<<"$docopts_out"
++    ${_from_nix_store[awk]} -F= "\$1 == \"$kstr\" {sub(\"^[^=]+=\", \"\", \$0);print}" <<<"$docopts_out"
+ }
+ 
+ # Doc:
+@@ -212,7 +214,7 @@ docopt_print_ARGS() {
+         done
+     else
+         echo "docopt_print_ARGS -G => ${assoc}_*"
+-        set | grep "^${assoc}_"
++        set | ${_from_nix_store[grep]} "^${assoc}_"
+     fi
+ }
+ 
